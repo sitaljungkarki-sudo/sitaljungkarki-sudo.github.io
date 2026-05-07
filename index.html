@@ -468,6 +468,48 @@
     .plink-d:hover { border-color: var(--border2); color: var(--text); }
 
     /* ── Certs ── */
+    .cert-card { cursor: pointer; }
+    .cert-view {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--text3); letter-spacing: 0.08em;
+      transition: color 0.2s; align-self: center;
+    }
+    .cert-card:hover .cert-view { color: var(--green); }
+
+    /* Certificate modal */
+    .cert-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 2000;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .cert-modal.open { display: flex; }
+    .cert-modal-inner {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 1.5rem;
+      max-width: 700px; width: 90%;
+      position: relative;
+    }
+    .cert-img {
+      width: 100%; border-radius: 8px;
+      display: block; margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+    .cert-modal-label {
+      font-family: var(--mono); font-size: 12px;
+      color: var(--text2); text-align: center;
+      letter-spacing: 0.06em;
+    }
+    .cert-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text2); border-radius: 50%;
+      width: 30px; height: 30px;
+      font-size: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; font-family: var(--mono);
+    }
+    .cert-close:hover { border-color: var(--green); color: var(--green); }
     .certs-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
     .cert-card {
       background: var(--bg2); border: 1px solid var(--border);
@@ -936,40 +978,83 @@
       <h2 class="section-title">My <em>credentials</em></h2>
     </div>
     <div class="certs-grid">
-      <div class="cert-card reveal">
+
+      <div class="cert-card reveal" onclick="openCert('cert1-modal')">
         <div class="cert-icon" style="background:rgba(255,64,96,0.08)">🎯</div>
-        <div>
+        <div style="flex:1">
           <div class="cert-title">Certified Ethical Hacker (CEH)</div>
           <div class="cert-issuer">EC-Council</div>
           <span class="badge badge-active">Active</span>
         </div>
+        <div class="cert-view">view ↗</div>
       </div>
-      <div class="cert-card reveal">
+
+      <div class="cert-card reveal" onclick="openCert('cert2-modal')">
         <div class="cert-icon" style="background:rgba(0,255,157,0.08)">🛡️</div>
-        <div>
+        <div style="flex:1">
           <div class="cert-title">CompTIA Security+</div>
           <div class="cert-issuer">CompTIA</div>
           <span class="badge badge-prog">In Progress</span>
         </div>
+        <div class="cert-view">view ↗</div>
       </div>
-      <div class="cert-card reveal">
+
+      <div class="cert-card reveal" onclick="openCert('cert3-modal')">
         <div class="cert-icon" style="background:rgba(77,184,255,0.08)">🔐</div>
-        <div>
+        <div style="flex:1">
           <div class="cert-title">GitHub Foundations</div>
           <div class="cert-issuer">GitHub</div>
           <span class="badge badge-active">Active</span>
         </div>
+        <div class="cert-view">view ↗</div>
       </div>
-      <div class="cert-card reveal">
+
+      <div class="cert-card reveal" onclick="openCert('cert4-modal')">
         <div class="cert-icon" style="background:rgba(255,179,0,0.08)">⚡</div>
-        <div>
+        <div style="flex:1">
           <div class="cert-title">Jr. Penetration Tester</div>
           <div class="cert-issuer">TryHackMe</div>
           <span class="badge badge-prog">In Progress</span>
         </div>
+        <div class="cert-view">view ↗</div>
       </div>
+
     </div>
   </div>
+
+  <!-- Certificate Modals -->
+  <div id="cert1-modal" class="cert-modal" onclick="closeCert(this)">
+    <div class="cert-modal-inner">
+      <button class="cert-close" onclick="closeCert(document.getElementById('cert1-modal'))">✕</button>
+      <img src="cert-ceh.jpg" alt="CEH Certificate" class="cert-img" />
+      <div class="cert-modal-label">Certified Ethical Hacker — EC-Council</div>
+    </div>
+  </div>
+
+  <div id="cert2-modal" class="cert-modal" onclick="closeCert(this)">
+    <div class="cert-modal-inner">
+      <button class="cert-close" onclick="closeCert(document.getElementById('cert2-modal'))">✕</button>
+      <img src="cert-security.jpg" alt="Security+ Certificate" class="cert-img" />
+      <div class="cert-modal-label">CompTIA Security+</div>
+    </div>
+  </div>
+
+  <div id="cert3-modal" class="cert-modal" onclick="closeCert(this)">
+    <div class="cert-modal-inner">
+      <button class="cert-close" onclick="closeCert(document.getElementById('cert3-modal'))">✕</button>
+      <img src="cert-github.jpg" alt="GitHub Foundations Certificate" class="cert-img" />
+      <div class="cert-modal-label">GitHub Foundations</div>
+    </div>
+  </div>
+
+  <div id="cert4-modal" class="cert-modal" onclick="closeCert(this)">
+    <div class="cert-modal-inner">
+      <button class="cert-close" onclick="closeCert(document.getElementById('cert4-modal'))">✕</button>
+      <img src="cert-tryhackme.jpg" alt="TryHackMe Certificate" class="cert-img" />
+      <div class="cert-modal-label">Jr. Penetration Tester — TryHackMe</div>
+    </div>
+  </div>
+
 </section>
 
 <!-- ══════════════ CONTACT ══════════════ -->
@@ -1163,6 +1248,15 @@
       console.error('EmailJS error:', error);
     });
   });
+  // Certificate modals
+  function openCert(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCert(el) {
+    el.closest('.cert-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
 </script>
 </body>
 </html>
