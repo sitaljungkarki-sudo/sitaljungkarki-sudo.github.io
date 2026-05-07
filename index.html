@@ -6,6 +6,7 @@
   <title>Sital Jungkarki — Cybersecurity Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <style>
     :root {
       --bg:        #080a0f;
@@ -917,11 +918,23 @@
       </div>
 
       <div class="reveal">
-        <div class="form">
+        <form class="form" id="contact-form">
           <div class="fg">
             <label class="flabel">your_name</label>
-            <input class="finput" type="text" placeholder="John Doe" />
+            <input class="finput" type="text" id="from_name" placeholder="John Doe" required />
           </div>
+          <div class="fg">
+            <label class="flabel">your_email</label>
+            <input class="finput" type="email" id="from_email" placeholder="john@example.com" required />
+          </div>
+          <div class="fg">
+            <label class="flabel">message</label>
+            <textarea class="ftextarea" id="message" placeholder="Hi Sital, I'd like to..."></textarea>
+          </div>
+          <button type="submit" class="fsubmit" id="submit-btn">send_message()</button>
+          <div id="form-status" style="display:none; font-family:var(--mono); font-size:12px; padding:10px 14px; border-radius:8px; margin-top:4px;"></div>
+        </form>
+      </div>
           <div class="fg">
             <label class="flabel">your_email</label>
             <input class="finput" type="email" placeholder="john@example.com" />
@@ -1008,17 +1021,73 @@
     navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current));
   });
 
-  // Contact form
-  function handleSubmit(btn){
-    btn.textContent = 'message_sent ✓';
-    btn.style.background = 'var(--green2)';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = 'send_message()';
+  // EmailJS
+  emailjs.init('_P9QUL-jd9wO2Td3s');
+
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const btn    = document.getElementById('submit-btn');
+    const status = document.getElementById('form-status');
+    const name   = document.getElementById('from_name').value.trim();
+    const email  = document.getElementById('from_email').value.trim();
+    const msg    = document.getElementById('message').value.trim();
+
+    if (!name || !email || !msg) {
+      status.style.display  = 'block';
+      status.style.background = 'rgba(255,64,96,0.1)';
+      status.style.border   = '1px solid rgba(255,64,96,0.3)';
+      status.style.color    = 'var(--red)';
+      status.textContent    = '✗ Please fill in all fields before sending.';
+      return;
+    }
+
+    btn.textContent  = 'sending...';
+    btn.disabled     = true;
+    btn.style.background = 'var(--bg3)';
+    btn.style.color  = 'var(--text2)';
+    status.style.display = 'none';
+
+    emailjs.send('service_gqipfvn', 'template_10yl2wg', {
+      from_name:  name,
+      from_email: email,
+      message:    msg
+    })
+    .then(() => {
+      btn.textContent      = 'message_sent ✓';
+      btn.style.background = 'var(--green2)';
+      btn.style.color      = 'var(--bg)';
+      btn.disabled         = false;
+
+      status.style.display    = 'block';
+      status.style.background = 'rgba(0,255,157,0.08)';
+      status.style.border     = '1px solid rgba(0,255,157,0.2)';
+      status.style.color      = 'var(--green)';
+      status.textContent      = '✓ Message sent! I\'ll get back to you soon.';
+
+      document.getElementById('contact-form').reset();
+
+      setTimeout(() => {
+        btn.textContent      = 'send_message()';
+        btn.style.background = 'var(--green)';
+        btn.style.color      = 'var(--bg)';
+        status.style.display = 'none';
+      }, 4000);
+    })
+    .catch((error) => {
+      btn.textContent      = 'send_message()';
       btn.style.background = 'var(--green)';
-      btn.disabled = false;
-    }, 3000);
-  }
+      btn.style.color      = 'var(--bg)';
+      btn.disabled         = false;
+
+      status.style.display    = 'block';
+      status.style.background = 'rgba(255,64,96,0.1)';
+      status.style.border     = '1px solid rgba(255,64,96,0.3)';
+      status.style.color      = 'var(--red)';
+      status.textContent      = '✗ Something went wrong. Please email me directly at sitaljungkarki@gmail.com';
+      console.error('EmailJS error:', error);
+    });
+  });
 </script>
 </body>
 </html>
